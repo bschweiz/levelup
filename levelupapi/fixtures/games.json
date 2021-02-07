@@ -1,0 +1,32 @@
+[
+    {
+        "model": "levelupapi.game",
+        "pk": 1,
+        "fields": {
+            "title": "Chess",
+            "game_type_id": 1,
+            "number_of_players": 2,
+            "gamer_id": 1
+        }
+    },
+    {
+        "model": "levelupapi.game",
+        "pk": 2,
+        "fields": {
+            "title": "Dungeons & Dragons",
+            "game_type_id": 2,
+            "number_of_players": 5,
+            "gamer_id": 1
+        }
+    },
+    {
+        "model": "levelupapi.game",
+        "pk": 3,
+        "fields": {
+            "title": "W.O.W.",
+            "game_type_id": 3,
+            "number_of_players": 10,
+            "gamer_id": 1
+        }
+    }
+]
