@@ -21,8 +21,8 @@ class Games(ViewSet):
         # game.skill_level = request.data["skillLevel"]
         game.gamer = gamer
         # now use the Djanog ORM to fetch the record from the database whose 'id' is what the client passed as game_type_id
-        gametype = GameType.objects.get(pk=request.data["game_type_id"])
-        game.gametype = gametype
+        game_type = GameType.objects.get(pk=request.data["game_type_id"])
+        game.game_type = game_type
 
         # try to save the new game to the db, then serialize it to JSON, then send that JSON back to client
         try:
@@ -52,8 +52,8 @@ class Games(ViewSet):
         game.number_of_players = request.data["number_of_players"]
         # game.skill_level = request.data["skillLevel"]
         game.gamer = gamer
-        gametype = GameType.objects.get(pk=request.data["game_type_id"])
-        game.gametype = gametype
+        game_type = GameType.objects.get(pk=request.data["game_type_id"])
+        game.game_type = game_type
         game.save()
         # 204 status send back
         return Response({}, status=status.HTTP_204_NO_CONTENT)
@@ -77,7 +77,7 @@ class Games(ViewSet):
         game_type = self.request.query_params.get('type', None)
         # we can check to filter the games by type in a query string ie: games?type=1 would return all board games
         if game_type is not None:
-            games = games.filter(gametype__id=game_type)
+            games = games.filter(game_type__id=game_type)
         serializer = GameSerializer(
             games, many=True, context={'request': request})
         return Response(serializer.data)
