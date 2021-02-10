@@ -1,3 +1,4 @@
+# view model for handling EVENT requests
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseServerError
@@ -49,3 +50,34 @@ def list(self, request):
         serializer = EventSerializer(
             events, many=True, context={'request': request})
         return Response(serializer.data)
+
+class EventUserSerializer(serializers.ModelSerializer):
+    # JSON serializer for event organizer's related Django user
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+class GameSerializer(serializers.ModelSerializer):
+    # JSON serializer for games
+    class Meta:
+        model = Game
+        fields = ('id', 'title', 'maker', 'number_of_players', 'skill_level')
+
+class EventGamerSerializer(serializers.ModelSerializer):
+    # JSON serializer for scheduler
+    user = EventUserSerializer(many=False)
+
+    class Meta:
+        model = Gamer
+        fields = ['user']
+        
+class EventSerializer(serializers.ModelSerializer):
+    # JSON serializer for events 
+    scheduler = EventGamerSerializer(many=False)
+    game = GameSerializer(many=False)
+
+    class Meta:
+        model = Event
+        fields = ('id', 'game', 'scheduler',
+                    'location', 'event_time')
+
