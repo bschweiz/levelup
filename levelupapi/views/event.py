@@ -1,4 +1,4 @@
-"""View module for handling requests about events"""
+# view model for handling EVENT requests
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseServerError
@@ -10,25 +10,16 @@ from rest_framework import serializers
 from levelupapi.models import Game, Event, Gamer
 from levelupapi.views.game import GameSerializer
 
-
 class Events(ViewSet):
-    """Level up events"""
-
     def create(self, request):
-        """Handle POST operations for events
-
-        Returns:
-            Response -- JSON serialized event instance
-        """
-        gamer = Gamer.objects.get(user=request.auth.user)
-
+        #handle POST operations for events, returns serialized JSON instance
         event = Event()
-        event.time = request.data["time"]
-        event.date = request.data["date"]
-        event.description = request.data["description"]
-        event.organizer = gamer
-
-        game = Game.objects.get(pk=request.data["gameId"])
+        scheduler = Gamer.objects.get(user = request.auth.user)
+        game = Game.objects.get(pk = request.data["game_id"])
+        # should the above 'game_id' be switched to camel case?
+        event.event_time = request.data["event_time"]
+        event.location = request.data["location"]
+        event.scheduler = scheduler
         event.game = game
 
         try:
@@ -36,47 +27,24 @@ class Events(ViewSet):
             serializer = EventSerializer(event, context={'request': request})
             return Response(serializer.data)
         except ValidationError as ex:
-            return Response({"reason": ex.message}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'reason': ex.message}, status=status.HTTP_400_BAD_REQUEST)
+            
+    def update(self, request, pk = None):
+        # handles PUT requests, response should be a 204
+        scheduler = Gamer.objects.get(user=request.auth.user)
+        event = Event.object.get(pk=pk)
+        game = Game.objects.get(pk = request.data["game_id"])
 
-    def retrieve(self, request, pk=None):
-        """Handle GET requests for single event
-
-        Returns:
-            Response -- JSON serialized game instance
-        """
-        try:
-            event = Event.objects.get(pk=pk)
-            serializer = EventSerializer(event, context={'request': request})
-            return Response(serializer.data)
-        except Exception:
-            return HttpResponseServerError(ex)
-
-    def update(self, request, pk=None):
-        """Handle PUT requests for an event
-
-        Returns:
-            Response -- Empty body with 204 status code
-        """
-        organizer = Gamer.objects.get(user=request.auth.user)
-
-        event = Event.objects.get(pk=pk)
-        event.description = request.data["description"]
-        event.date = request.data["date"]
-        event.time = request.data["time"]
-        event.organizer = organizer
-
-        game = Game.objects.get(pk=request.data["gameId"])
+        event.event_time = request.data["event_time"]
+        event.location = request.data["location"]
+        event.scheduler = scheduler
         event.game = game
         event.save()
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
-
-    def destroy(self, request, pk=None):
-        """Handle DELETE requests for a single game
-
-        Returns:
-            Response -- 200, 404, or 500 status code
-        """
+    
+    def destroy(self, request, pk = None):
+        # handles Delete request, response is 200, 404, or 500
         try:
             event = Event.objects.get(pk=pk)
             event.delete()
@@ -90,30 +58,26 @@ class Events(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def list(self, request):
-        """Handle GET requests to events resource
-
-        Returns:
-            Response -- JSON serialized list of events
-        """
+        # handle GET all requests
         events = Event.objects.all()
-
-        # Support filtering events by game
-        game = self.request.query_params.get('gameId', None)
+        # support filtering by game
+        game = self.request.query_params.get('game_id', None)
         if game is not None:
             events = events.filter(game__id=game)
 
-        serializer = EventSerializer(
-            events, many=True, context={'request': request})
-        return Response(serializer.data)
+            serializer = EventSerializer(
+                events, many=True, context={'request': request})
+            return Response(serializer.data)
 
+# using ModelSerializer to define our serializers for this ViewSet
 class EventUserSerializer(serializers.ModelSerializer):
-    """JSON serializer for event organizer's related Django user"""
+    # JSON serializer for event organizer's related Django user
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
 
 class EventGamerSerializer(serializers.ModelSerializer):
-    """JSON serializer for event organizer"""
+    # JSON serializer for scheduler
     user = EventUserSerializer(many=False)
 
     class Meta:
@@ -121,18 +85,18 @@ class EventGamerSerializer(serializers.ModelSerializer):
         fields = ['user']
 
 class GameSerializer(serializers.ModelSerializer):
-    """JSON serializer for games"""
+    # JSON serializer for games
     class Meta:
         model = Game
-        fields = ('id', 'title', 'maker', 'number_of_players', 'skill_level')
+        fields = ('id', 'title', 'gamer_id', 'number_of_players')
 
 class EventSerializer(serializers.ModelSerializer):
-    """JSON serializer for events"""
-    organizer = EventGamerSerializer(many=False)
+    # JSON serializer for events 
+    scheduler = EventGamerSerializer(many=False)
     game = GameSerializer(many=False)
 
     class Meta:
         model = Event
-        fields = ('id', 'game', 'organizer',
-                    'description', 'date', 'time')
+        fields = ('id', 'scheduler', 'game', 
+                    'event_time', 'location')
 
