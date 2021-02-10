@@ -65,9 +65,9 @@ class Events(ViewSet):
         if game is not None:
             events = events.filter(game__id=game)
 
-            serializer = EventSerializer(
-                events, many=True, context={'request': request})
-            return Response(serializer.data)
+        serializer = EventSerializer(
+            events, many=True, context={'request': request})
+        return Response(serializer.data)
 
 # using ModelSerializer to define our serializers for this ViewSet
 class EventUserSerializer(serializers.ModelSerializer):
