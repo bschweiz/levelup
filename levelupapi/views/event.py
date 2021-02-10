@@ -29,8 +29,15 @@ class Events(ViewSet):
         except ValidationError as ex:
             return Response({'reason': ex.message}, status=status.HTTP_400_BAD_REQUEST)
     
-    def retrieve()
-
+    def retrieve(self, request, pk = None):
+        # handle GET request for single event
+        try:
+            event = Event.objects.get(pk=pk)
+            serializer = EventSerializer(event, context={'request': request})
+            return Response(serializer.data)
+        except Exception:
+            # what is up with this 'ex' here? not defined within the scope of this function
+            return HttpResponseServerError(ex)
 
     def update(self, request, pk = None):
         # handles PUT requests, response should be a 204
