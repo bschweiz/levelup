@@ -61,7 +61,7 @@ class GameSerializer(serializers.ModelSerializer):
     # JSON serializer for games
     class Meta:
         model = Game
-        fields = ('id', 'title', 'maker', 'number_of_players', 'skill_level')
+        fields = ('id', 'title', 'gamer_id', 'number_of_players')
 
 class EventGamerSerializer(serializers.ModelSerializer):
     # JSON serializer for scheduler
@@ -70,7 +70,7 @@ class EventGamerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Gamer
         fields = ['user']
-        
+
 class EventSerializer(serializers.ModelSerializer):
     # JSON serializer for events 
     scheduler = EventGamerSerializer(many=False)
