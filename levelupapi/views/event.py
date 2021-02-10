@@ -28,7 +28,10 @@ class Events(ViewSet):
             return Response(serializer.data)
         except ValidationError as ex:
             return Response({'reason': ex.message}, status=status.HTTP_400_BAD_REQUEST)
-            
+    
+    def retrieve()
+
+
     def update(self, request, pk = None):
         # handles PUT requests, response should be a 204
         scheduler = Gamer.objects.get(user=request.auth.user)
