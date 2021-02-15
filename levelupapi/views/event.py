@@ -68,7 +68,8 @@ class Events(ViewSet):
     def list(self, request):
         # handle GET all requests
         events = Event.objects.all()
-        # support filtering by game
+        # support filtering by game, ???? in ch10 i don't think i'm hiting this endpoint yet to know if i need to change it to camel case?
+        # i don't think that there is an appropriant fetch function in EventProvider to hit this yet and ENABLE filtering events BY GAME
         game = self.request.query_params.get('game_id', None)
         if game is not None:
             events = events.filter(game__id=game)
