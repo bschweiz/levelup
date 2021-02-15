@@ -18,7 +18,7 @@ class Games(ViewSet):
         game.title = request.data["title"]
         game.game_type_id = request.data["gameTypeId"]
         game.number_of_players = request.data["numberOfPlayers"]
-        # game.skill_level = request.data["skillLevel"]
+        game.description = request.data["description"]
         game.gamer = gamer
         # now use the Djanog ORM to fetch the record from the database whose 'id' is what the client passed as gameTypeId
         game_type = GameType.objects.get(pk=request.data["gameTypeId"])
@@ -50,7 +50,7 @@ class Games(ViewSet):
         game.title = request.data["title"]
         game.game_type_id = request.data["gameTypeId"]
         game.number_of_players = request.data["numberOfPlayers"]
-        # game.skill_level = request.data["skillLevel"]
+        game.description = request.data["description"]
         game.gamer = gamer
         game_type = GameType.objects.get(pk=request.data["gameTypeId"])
         game.game_type = game_type
