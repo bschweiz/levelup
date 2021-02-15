@@ -48,11 +48,11 @@ class Games(ViewSet):
         # get the game record w/ primary key equal to pk
         game = Game.objects.get (pk=pk)
         game.title = request.data["title"]
-        game.game_type_id = request.data["game_type_id"]
-        game.number_of_players = request.data["number_of_players"]
+        game.game_type_id = request.data["gameTypeId"]
+        game.number_of_players = request.data["numberOfPlayers"]
         # game.skill_level = request.data["skillLevel"]
         game.gamer = gamer
-        game_type = GameType.objects.get(pk=request.data["game_type_id"])
+        game_type = GameType.objects.get(pk=request.data["gameTypeId"])
         game.game_type = game_type
         game.save()
         # 204 status send back
