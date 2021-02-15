@@ -35,8 +35,7 @@ class Events(ViewSet):
             event = Event.objects.get(pk=pk)
             serializer = EventSerializer(event, context={'request': request})
             return Response(serializer.data)
-        except Exception:
-            # what is up with this 'ex' here? not defined within the scope of this function
+        except Exception as ex:
             return HttpResponseServerError(ex)
 
     def update(self, request, pk = None):
