@@ -15,9 +15,8 @@ class Events(ViewSet):
         #handle POST operations for events, returns serialized JSON instance
         event = Event()
         scheduler = Gamer.objects.get(user = request.auth.user)
-        game = Game.objects.get(pk = request.data["game_id"])
-        # should the above 'game_id' be switched to camel case?
-        event.event_time = request.data["event_time"]
+        game = Game.objects.get(pk = request.data["gameId"])
+        event.event_time = request.data["eventTime"]
         event.location = request.data["location"]
         event.scheduler = scheduler
         event.game = game
@@ -35,17 +34,16 @@ class Events(ViewSet):
             event = Event.objects.get(pk=pk)
             serializer = EventSerializer(event, context={'request': request})
             return Response(serializer.data)
-        except Exception:
-            # what is up with this 'ex' here? not defined within the scope of this function
+        except Exception as ex:
             return HttpResponseServerError(ex)
 
     def update(self, request, pk = None):
         # handles PUT requests, response should be a 204
         scheduler = Gamer.objects.get(user=request.auth.user)
         event = Event.object.get(pk=pk)
-        game = Game.objects.get(pk = request.data["game_id"])
+        game = Game.objects.get(pk = request.data["gameId"])
 
-        event.event_time = request.data["event_time"]
+        event.event_time = request.data["eventTime"]
         event.location = request.data["location"]
         event.scheduler = scheduler
         event.game = game
@@ -70,7 +68,8 @@ class Events(ViewSet):
     def list(self, request):
         # handle GET all requests
         events = Event.objects.all()
-        # support filtering by game
+        # support filtering by game, ???? in ch10 i don't think i'm hiting this endpoint yet to know if i need to change it to camel case?
+        # i don't think that there is an appropriant fetch function in EventProvider to hit this yet and ENABLE filtering events BY GAME
         game = self.request.query_params.get('game_id', None)
         if game is not None:
             events = events.filter(game__id=game)

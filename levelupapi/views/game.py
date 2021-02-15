@@ -16,12 +16,12 @@ class Games(ViewSet):
         # create a new Python instance of the Game class con properties de REQUEST de client 
         game = Game()
         game.title = request.data["title"]
-        game.game_type_id = request.data["game_type_id"]
-        game.number_of_players = request.data["number_of_players"]
-        # game.skill_level = request.data["skillLevel"]
+        game.game_type_id = request.data["gameTypeId"]
+        game.number_of_players = request.data["numberOfPlayers"]
+        game.description = request.data["description"]
         game.gamer = gamer
-        # now use the Djanog ORM to fetch the record from the database whose 'id' is what the client passed as game_type_id
-        game_type = GameType.objects.get(pk=request.data["game_type_id"])
+        # now use the Djanog ORM to fetch the record from the database whose 'id' is what the client passed as gameTypeId
+        game_type = GameType.objects.get(pk=request.data["gameTypeId"])
         game.game_type = game_type
 
         # try to save the new game to the db, then serialize it to JSON, then send that JSON back to client
@@ -48,11 +48,11 @@ class Games(ViewSet):
         # get the game record w/ primary key equal to pk
         game = Game.objects.get (pk=pk)
         game.title = request.data["title"]
-        game.game_type_id = request.data["game_type_id"]
-        game.number_of_players = request.data["number_of_players"]
-        # game.skill_level = request.data["skillLevel"]
+        game.game_type_id = request.data["gameTypeId"]
+        game.number_of_players = request.data["numberOfPlayers"]
+        game.description = request.data["description"]
         game.gamer = gamer
-        game_type = GameType.objects.get(pk=request.data["game_type_id"])
+        game_type = GameType.objects.get(pk=request.data["gameTypeId"])
         game.game_type = game_type
         game.save()
         # 204 status send back
