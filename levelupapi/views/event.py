@@ -15,9 +15,8 @@ class Events(ViewSet):
         #handle POST operations for events, returns serialized JSON instance
         event = Event()
         scheduler = Gamer.objects.get(user = request.auth.user)
-        game = Game.objects.get(pk = request.data["game_id"])
-        # should the above 'game_id' be switched to camel case?
-        event.event_time = request.data["event_time"]
+        game = Game.objects.get(pk = request.data["gameId"])
+        event.event_time = request.data["eventTime"]
         event.location = request.data["location"]
         event.scheduler = scheduler
         event.game = game
@@ -42,9 +41,9 @@ class Events(ViewSet):
         # handles PUT requests, response should be a 204
         scheduler = Gamer.objects.get(user=request.auth.user)
         event = Event.object.get(pk=pk)
-        game = Game.objects.get(pk = request.data["game_id"])
+        game = Game.objects.get(pk = request.data["gameId"])
 
-        event.event_time = request.data["event_time"]
+        event.event_time = request.data["eventTime"]
         event.location = request.data["location"]
         event.scheduler = scheduler
         event.game = game
