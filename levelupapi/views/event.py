@@ -67,11 +67,20 @@ class Events(ViewSet):
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def list(self, request):
+        game = self.request.query_params.get('game_id', None)
         # handle GET all requests
         events = Event.objects.all()
+        this_gamer = Gamer.objects.get(user=request.auth.user)
+        # set 'joined' property on every event
+        for this_event in events:
+            try:
+                EventGamer.objects.get(event=this_event, gamer=this_gamer)
+                this_event.joined = True
+            except EventGamer.DoesNotExist as ex:
+                this_event.joined = False
         # support filtering by game, ???? in ch10 i don't think i'm hiting this endpoint yet to know if i need to change it to camel case?
         # i don't think that there is an appropriant fetch function in EventProvider to hit this yet and ENABLE filtering events BY GAME
-        game = self.request.query_params.get('game_id', None)
+        
         if game is not None:
             events = events.filter(game__id=game)
 
@@ -168,4 +177,4 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'scheduler', 'game',
-                    'event_time', 'location')
+                    'event_time', 'location', 'joined')
