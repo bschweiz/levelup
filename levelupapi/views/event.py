@@ -135,7 +135,7 @@ class Events(ViewSet):
                 registration.delete()
                 return Response(None, status=status.HTTP_204_NO_CONTENT)
 
-            except EventGamers.DoesNotExist:
+            except EventGamer.DoesNotExist:
                 return Response(
                     {'message': 'Not currently registered for event.'},
                     status=status.HTTP_404_NOT_FOUND
