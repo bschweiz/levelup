@@ -7,15 +7,16 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
-from levelupapi.models import Game, Event, Gamer
+from levelupapi.models import Game, Event, Gamer, EventGamer
 from levelupapi.views.game import GameSerializer
+
 
 class Events(ViewSet):
     def create(self, request):
-        #handle POST operations for events, returns serialized JSON instance
+        # handle POST operations for events, returns serialized JSON instance
         event = Event()
-        scheduler = Gamer.objects.get(user = request.auth.user)
-        game = Game.objects.get(pk = request.data["gameId"])
+        scheduler = Gamer.objects.get(user=request.auth.user)
+        game = Game.objects.get(pk=request.data["gameId"])
         event.event_time = request.data["eventTime"]
         event.location = request.data["location"]
         event.scheduler = scheduler
@@ -27,8 +28,8 @@ class Events(ViewSet):
             return Response(serializer.data)
         except ValidationError as ex:
             return Response({'reason': ex.message}, status=status.HTTP_400_BAD_REQUEST)
-    
-    def retrieve(self, request, pk = None):
+
+    def retrieve(self, request, pk=None):
         # handle GET request for single event
         try:
             event = Event.objects.get(pk=pk)
@@ -37,11 +38,11 @@ class Events(ViewSet):
         except Exception as ex:
             return HttpResponseServerError(ex)
 
-    def update(self, request, pk = None):
+    def update(self, request, pk=None):
         # handles PUT requests, response should be a 204
         scheduler = Gamer.objects.get(user=request.auth.user)
         event = Event.object.get(pk=pk)
-        game = Game.objects.get(pk = request.data["gameId"])
+        game = Game.objects.get(pk=request.data["gameId"])
 
         event.event_time = request.data["eventTime"]
         event.location = request.data["location"]
@@ -50,8 +51,8 @@ class Events(ViewSet):
         event.save()
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
-    
-    def destroy(self, request, pk = None):
+
+    def destroy(self, request, pk=None):
         # handles Delete request, response is 200, 404, or 500
         try:
             event = Event.objects.get(pk=pk)
@@ -78,12 +79,70 @@ class Events(ViewSet):
             events, many=True, context={'request': request})
         return Response(serializer.data)
 
+
+
+    @action(methods=['post', 'delete'], detail=True)
+    def signup(self, request, pk=None):
+        # manages gamers signing up for events
+        if request.method == "POST":
+            # pk is the parameter of the query request before the verb
+            event = Event.objects.get(pk=pk)
+            # uses django 'authorixation' header to find which user is making the request to sign up
+            gamer = Gamer.objects.get(user=request.auth.user)
+
+            try:
+                # check if they are already signed up
+                registration = EventGamer.objects.get(
+                    event=event, gamer=gamer)
+                return Response(
+                    {'message': 'Gamer already signed up for this event.'},
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY
+                )
+            except EventGamer.DoesNotExist:
+                registration = EventGamer()
+                registration.event = event
+                registration.gamer = gamer
+                registration.save()
+
+                return Response({}, status=status.HTTP_201_CREATED)
+
+        # User wants to leave a previously joined event
+        elif request.method == "DELETE":
+            # if the game don't exist
+            try:
+                event = Event.objects.get(pk=pk)
+            except Event.DoesNotExist:
+                return Response(
+                    {'message': 'Event does not exist.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            # Get the authenticated user
+            gamer = Gamer.objects.get(user=request.auth.user)
+
+            try:
+                # Try to delete the signup
+                registration = EventGamer.objects.get(
+                    event=event, gamer=gamer)
+                registration.delete()
+                return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+            except EventGamers.DoesNotExist:
+                return Response(
+                    {'message': 'Not currently registered for event.'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        
+        return Response({}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
 # using ModelSerializer to define our serializers for this ViewSet
+
 class EventUserSerializer(serializers.ModelSerializer):
     # JSON serializer for event organizer's related Django user
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
+
 
 class EventGamerSerializer(serializers.ModelSerializer):
     # JSON serializer for scheduler
@@ -93,19 +152,20 @@ class EventGamerSerializer(serializers.ModelSerializer):
         model = Gamer
         fields = ['user']
 
+
 class GameSerializer(serializers.ModelSerializer):
     # JSON serializer for games
     class Meta:
         model = Game
         fields = ('id', 'title', 'gamer_id', 'number_of_players')
 
+
 class EventSerializer(serializers.ModelSerializer):
-    # JSON serializer for events 
+    # JSON serializer for events
     scheduler = EventGamerSerializer(many=False)
     game = GameSerializer(many=False)
 
     class Meta:
         model = Event
-        fields = ('id', 'scheduler', 'game', 
+        fields = ('id', 'scheduler', 'game',
                     'event_time', 'location')
-
