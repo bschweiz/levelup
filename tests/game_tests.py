@@ -17,3 +17,11 @@ class GameTests(APITestCase):
             'last_name': 'Brownlee',
             'bio': 'Love those gamez!!'
         }
+        #initiate request and grab the response
+        response = self.client.post(url, data, format='json')
+        #parse the JSON in the resonse body
+        fuckin_json_response = json.loads(response.content)
+        #store teh AUTH Token
+        self.token = fuckin_json_response['token']
+        #assert that a user was created
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
