@@ -95,7 +95,7 @@ class GameTests(APITestCase):
         }
 
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
-        response = self.client.put(f'/games/{game.id}', data, format+'json')
+        response = self.client.put(f'/games/{game.id}', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         #verify the changes
         response = self.client.get(f'/games/{game.id}')
