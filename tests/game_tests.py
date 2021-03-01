@@ -37,7 +37,7 @@ class GameTests(APITestCase):
         url = '/games'
         data = {
             'gamer_id': 1,
-            'gameTypeId': 5,
+            'gameTypeId': 1,
             'title': 'Clue',
             'description': 'Milton Bradley',
             'numberOfPlayers': 6,
@@ -52,6 +52,5 @@ class GameTests(APITestCase):
         self.assertEqual(damn_response.status_code, status.HTTP_201_CREATED)
         #assert that the properties on the damn resource are correct
         self.assertEqual(json_response['title'], 'Clue')
-        self.assertEqual(json_response['maker'], 'Milton Bradley')
-        self.assertEqual(json_response['skill_level'], 5)
+        self.assertEqual(json_response['description'], 'Milton Bradley')
         self.assertEqual(json_response['number_of_players'], 6)
