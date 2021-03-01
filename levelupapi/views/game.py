@@ -40,6 +40,7 @@ class Games(ViewSet):
             serializer = GameSerializer(game, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
+            #the status declaration added to pass the test we wrote as part of book 3
             return HttpResponseServerError(ex, status=status.HTTP_404_NOT_FOUND)
     
     def update(self, request, pk = None):
