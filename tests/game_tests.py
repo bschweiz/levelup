@@ -25,3 +25,33 @@ class GameTests(APITestCase):
         self.token = fuckin_json_response['token']
         #assert that a user was created
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        #seed the DB wit one game type so it don't break and there's no URL endpoint for creating GTs
+        gametype = GameType()
+        gametype.label = 'Stupid Type'
+        gametype.save()
+
+    def test_create_game(self):
+        #verify we can create a game 
+        # DEFINE GAME PROPERTIES
+        url = '/games'
+        data = {
+            'gameTypeId': 1,
+            'skillLevel': 5,
+            'title': 'Clue',
+            'maker': 'Milton Bradley',
+            'numberOfPlayers': 6,
+        }
+        #make sure the request is AUTHENTICATED
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+        #initiate request and store response
+        damn_response =self.client.post(url, data, format='json')
+        #parse that shit into JSON
+        json_response = json.loads(damn_response.content)
+        #assert that the game was created
+        self.assertEqual(damn_response.status_code, status.HTTP_201_CREATED)
+        #assert that the properties on the damn resource are correct
+        self.assertEqual(json_response['title'], 'Clue')
+        self.assertEqual(json_response['maker'], 'Milton Bradley')
+        self.assertEqual(json_response['skill_level'], 5)
+        self.assertEqual(json_response['number_of_players'], 6)
