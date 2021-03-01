@@ -1,13 +1,13 @@
 import json
 from rest_framework import status
 from rest_framework.test import APITestCase
-from levelupai.models import GameType
+from levelupapi.models import GameType
 
 class GameTests(APITestCase):
     def setUp(self):
         #create new account and sample category
         url = '/register'
-        data = = {
+        data = {
             'username': 'steve',
             'password': 'Admin8*',
             'email': 'steve@stevebrownlee.com',
