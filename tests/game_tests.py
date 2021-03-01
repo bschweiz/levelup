@@ -117,9 +117,9 @@ def test_delete_game(self):
     game.save()
 
     self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
-    response = self.client.delete(f"/games/{game.id}")
+    response = self.client.delete(f'/games/{game.id}')
     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     # GET GAME AGAIN TO VERIFY 404 response
-    response = self.client.get(f"/games/{game.id}")
+    response = self.client.get(f'/games/{game.id}')
     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
