@@ -36,10 +36,10 @@ class GameTests(APITestCase):
         # DEFINE GAME PROPERTIES
         url = '/games'
         data = {
-            'gameTypeId': 1,
-            'skillLevel': 5,
+            'gamer_id': 1,
+            'gameTypeId': 5,
             'title': 'Clue',
-            'maker': 'Milton Bradley',
+            'description': 'Milton Bradley',
             'numberOfPlayers': 6,
         }
         #make sure the request is AUTHENTICATED
