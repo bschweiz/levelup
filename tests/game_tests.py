@@ -62,7 +62,7 @@ class GameTests(APITestCase):
         game.title = 'Chess'
         game.description = 'GOAT Board Game'
         game.number_of_players = 2
-        game.gamer_id = id
+        game.gamer_id = 1
         game.save()
         #make sure request is authenticated
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
