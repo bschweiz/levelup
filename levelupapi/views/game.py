@@ -40,7 +40,7 @@ class Games(ViewSet):
             serializer = GameSerializer(game, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
-            return HttpResponseServerError(ex)
+            return HttpResponseServerError(ex, status=status.HTTP_404_NOT_FOUND)
     
     def update(self, request, pk = None):
         # handle PUT request for games, response: empty body with 204 status code
@@ -69,7 +69,7 @@ class Games(ViewSet):
         except Game.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
         except Exception as ex:
-            return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
     def list(self, request):
         # handle GET all games, returns JSON serialized list of games
