@@ -59,74 +59,73 @@ class EventTests(APITestCase):
         self.assertEqual(this_response.status_code, status.HTTP_201_CREATED)
         #assert that the properties on the this resource are correct
         self.assertEqual(json_response['event_time'], '2021-03-11T14:00:00.000Z')
-        self.assertEqual(json_response['description'], 'Milton Bradley')
-        self.assertEqual(json_response['number_of_players'], 6)
+        self.assertEqual(json_response['location'], 'NSS')
+        
+    # def test_get_game(self):
+    #     #check to see if we can get an existing game, 1st seed the DB
+    #     game = Game()
+    #     game.game_type_id = 1
+    #     game.title = 'Chess'
+    #     game.description = 'GOAT Board Game'
+    #     game.number_of_players = 2
+    #     game.gamer_id = 1
+    #     game.save()
+    #     #make sure request is authenticated
+    #     self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+    #     #initi8ate request and store response
+    #     response = self.client.get(f'/games/{game.id}')
+    #     #json rESPONSE JUST FUCKING PARSE IT!!!
+    #     json_response = json.loads(response.content)
+    #     #assert that the game WAS RETRIEVED SUCCESSFULLY
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     #assert that the values are correct
+    #     self.assertEqual(json_response['title'], 'Chess')
+    #     self.assertEqual(json_response['description'], 'GOAT Board Game')
+    #     self.assertEqual(json_response['number_of_players'], 2)
 
-    def test_get_game(self):
-        #check to see if we can get an existing game, 1st seed the DB
-        game = Game()
-        game.game_type_id = 1
-        game.title = 'Chess'
-        game.description = 'GOAT Board Game'
-        game.number_of_players = 2
-        game.gamer_id = 1
-        game.save()
-        #make sure request is authenticated
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
-        #initi8ate request and store response
-        response = self.client.get(f'/games/{game.id}')
-        #json rESPONSE JUST FUCKING PARSE IT!!!
-        json_response = json.loads(response.content)
-        #assert that the game WAS RETRIEVED SUCCESSFULLY
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        #assert that the values are correct
-        self.assertEqual(json_response['title'], 'Chess')
-        self.assertEqual(json_response['description'], 'GOAT Board Game')
-        self.assertEqual(json_response['number_of_players'], 2)
+    # def test_change_game(self):
+    #     #test we can update an existing game
+    #     game = Game()
+    #     game.game_type_id = 1
+    #     game.title = 'Chess'
+    #     game.description = 'GOAT Board Game'
+    #     game.number_of_players = 2
+    #     game.gamer_id = 1
+    #     game.save()
+    #     #now define NEW properties for this shit
+    #     data = {
+    #         'gameTypeId': 1,
+    #         'title': 'Clue',
+    #         'description': 'Milton Bradley',
+    #         'numberOfPlayers': 6,
+    #     }
 
-    def test_change_game(self):
-        #test we can update an existing game
-        game = Game()
-        game.game_type_id = 1
-        game.title = 'Chess'
-        game.description = 'GOAT Board Game'
-        game.number_of_players = 2
-        game.gamer_id = 1
-        game.save()
-        #now define NEW properties for this shit
-        data = {
-            'gameTypeId': 1,
-            'title': 'Clue',
-            'description': 'Milton Bradley',
-            'numberOfPlayers': 6,
-        }
+    #     self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+    #     response = self.client.put(f'/games/{game.id}', data, format='json')
+    #     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+    #     #verify the changes
+    #     response = self.client.get(f'/games/{game.id}')
+    #     json_response = json.loads(response.content)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     #assert that the properties on the this resource are correct
+    #     self.assertEqual(json_response['title'], 'Clue')
+    #     self.assertEqual(json_response['description'], 'Milton Bradley')
+    #     self.assertEqual(json_response['number_of_players'], 6)
 
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
-        response = self.client.put(f'/games/{game.id}', data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        #verify the changes
-        response = self.client.get(f'/games/{game.id}')
-        json_response = json.loads(response.content)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        #assert that the properties on the this resource are correct
-        self.assertEqual(json_response['title'], 'Clue')
-        self.assertEqual(json_response['description'], 'Milton Bradley')
-        self.assertEqual(json_response['number_of_players'], 6)
+    # def test_delete_game(self):
+    #     #make sure we can delete a game
+    #     game = Game()
+    #     game.game_type_id = 1
+    #     game.title = 'Chess'
+    #     game.description = 'GOAT Board Game'
+    #     game.number_of_players = 2
+    #     game.gamer_id = 1
+    #     game.save()
 
-    def test_delete_game(self):
-        #make sure we can delete a game
-        game = Game()
-        game.game_type_id = 1
-        game.title = 'Chess'
-        game.description = 'GOAT Board Game'
-        game.number_of_players = 2
-        game.gamer_id = 1
-        game.save()
+    #     self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+    #     response = self.client.delete(f'/games/{game.id}')
+    #     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
-        response = self.client.delete(f'/games/{game.id}')
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-        # GET GAME AGAIN TO VERIFY 404 response
-        response = self.client.get(f'/games/{game.id}')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+    #     # GET GAME AGAIN TO VERIFY 404 response
+    #     response = self.client.get(f'/games/{game.id}')
+    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
