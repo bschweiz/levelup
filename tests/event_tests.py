@@ -1,9 +1,9 @@
 import json
 from rest_framework import status
 from rest_framework.test import APITestCase
-from levelupapi.models import Event, Game
+from levelupapi.models import Event, Game, GameType
 
-class GameTests(APITestCase):
+class EventTests(APITestCase):
     def setUp(self):
         #create new account and sample category
         url = '/register'
@@ -30,6 +30,14 @@ class GameTests(APITestCase):
         gametype = GameType()
         gametype.label = 'Classic Type'
         gametype.save()
+        #now make a dummy game and save it
+        game = Game()
+        game.game_type_id = 1
+        game.title = 'Chess'
+        game.description = 'GOAT Board Game'
+        game.number_of_players = 2
+        game.gamer_id = 1
+        game.save()
 
     def test_create_game(self):
         #verify we can create a game 
