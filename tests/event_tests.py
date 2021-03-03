@@ -1,8 +1,7 @@
 import json
 from rest_framework import status
 from rest_framework.test import APITestCase
-from levelupapi.models import GameType, Game
-
+from levelupapi.models import Event, Game
 
 class GameTests(APITestCase):
     def setUp(self):
