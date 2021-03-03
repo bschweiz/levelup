@@ -45,7 +45,7 @@ class EventTests(APITestCase):
         url = '/events'
         data = {
             'scheduler': 1,
-            'game': 1,
+            'gameId': 1,
             'event_time': '2021-03-11T14:00:00.000Z',
             'location': 'NSS'
         }
