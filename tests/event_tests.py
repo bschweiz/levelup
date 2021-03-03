@@ -39,13 +39,13 @@ class EventTests(APITestCase):
         game.gamer_id = 1
         game.save()
 
-    def test_create_evnt(self):
+    def test_create_event(self):
         #verify we can create an event 
         # DEFINE EVENT PROPERTIES
         url = '/events'
         data = {
             'scheduler': 1,
-            'game_id': 1,
+            'game': 1,
             'event_time': '2021-03-11T14:00:00.000Z',
             'location': 'NSS'
         }
