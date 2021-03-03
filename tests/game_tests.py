@@ -21,9 +21,9 @@ class GameTests(APITestCase):
         #initiate request and grab the response
         response = self.client.post(url, data, format='json')
         #parse the JSON in the resonse body
-        fuckin_json_response = json.loads(response.content)
+        json_response = json.loads(response.content)
         #store teh AUTH Token
-        self.token = fuckin_json_response['token']
+        self.token = json_response['token']
         #assert that a user was created
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -46,12 +46,12 @@ class GameTests(APITestCase):
         #make sure the request is AUTHENTICATED
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         #initiate request and store response
-        damn_response =self.client.post(url, data, format='json')
+        this_response =self.client.post(url, data, format='json')
         #parse that shit into JSON
-        json_response = json.loads(damn_response.content)
+        json_response = json.loads(this_response.content)
         #assert that the game was created
-        self.assertEqual(damn_response.status_code, status.HTTP_201_CREATED)
-        #assert that the properties on the damn resource are correct
+        self.assertEqual(this_response.status_code, status.HTTP_201_CREATED)
+        #assert that the properties on the this resource are correct
         self.assertEqual(json_response['title'], 'Clue')
         self.assertEqual(json_response['description'], 'Milton Bradley')
         self.assertEqual(json_response['number_of_players'], 6)
@@ -102,7 +102,7 @@ class GameTests(APITestCase):
         response = self.client.get(f'/games/{game.id}')
         json_response = json.loads(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        #assert that the properties on the damn resource are correct
+        #assert that the properties on the this resource are correct
         self.assertEqual(json_response['title'], 'Clue')
         self.assertEqual(json_response['description'], 'Milton Bradley')
         self.assertEqual(json_response['number_of_players'], 6)

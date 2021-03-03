@@ -1,9 +1,9 @@
 import json
 from rest_framework import status
 from rest_framework.test import APITestCase
-from levelupapi.models import Event, Game
+from levelupapi.models import Event, Game, GameType
 
-class GameTests(APITestCase):
+class EventTests(APITestCase):
     def setUp(self):
         #create new account and sample category
         url = '/register'
@@ -30,26 +30,33 @@ class GameTests(APITestCase):
         gametype = GameType()
         gametype.label = 'Classic Type'
         gametype.save()
+        #now make a dummy game and save it
+        game = Game()
+        game.game_type_id = 1
+        game.title = 'Chess'
+        game.description = 'GOAT Board Game'
+        game.number_of_players = 2
+        game.gamer_id = 1
+        game.save()
 
-    def test_create_game(self):
-        #verify we can create a game 
-        # DEFINE GAME PROPERTIES
-        url = '/games'
+    def test_create_evnt(self):
+        #verify we can create an event 
+        # DEFINE EVENT PROPERTIES
+        url = '/events'
         data = {
-            'gamer_id': 1,
-            'gameTypeId': 1,
-            'title': 'Clue',
-            'description': 'Milton Bradley',
-            'numberOfPlayers': 6,
+            'scheduler': 1,
+            'game_id': 1,
+            'event_time': '2021-03-11T14:00:00.000Z',
+            'location': 'NSS'
         }
         #make sure the request is AUTHENTICATED
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
         #initiate request and store response
-        damn_response =self.client.post(url, data, format='json')
+        this_response =self.client.post(url, data, format='json')
         #parse that shit into JSON
-        json_response = json.loads(damn_response.content)
+        json_response = json.loads(this_response.content)
         #assert that the game was created
-        self.assertEqual(damn_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(this_response.status_code, status.HTTP_201_CREATED)
         #assert that the properties on the damn resource are correct
         self.assertEqual(json_response['title'], 'Clue')
         self.assertEqual(json_response['description'], 'Milton Bradley')
