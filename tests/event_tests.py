@@ -46,7 +46,7 @@ class EventTests(APITestCase):
         data = {
             'scheduler': 1,
             'gameId': 1,
-            'event_time': '2021-03-11T14:00:00.000Z',
+            'eventTime': '2021-03-11T14:00:00.000Z',
             'location': 'NSS'
         }
         #make sure the request is AUTHENTICATED
@@ -58,7 +58,7 @@ class EventTests(APITestCase):
         #assert that the game was created
         self.assertEqual(this_response.status_code, status.HTTP_201_CREATED)
         #assert that the properties on the this resource are correct
-        self.assertEqual(json_response['event_time'], '2021-03-11T14:00:00.000Z')
+        self.assertEqual(json_response['eventTime'], '2021-03-11T14:00:00.000Z')
         self.assertEqual(json_response['location'], 'NSS')
         
     # def test_get_game(self):
