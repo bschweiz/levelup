@@ -41,7 +41,7 @@ class GameTests(APITestCase):
             'gameTypeId': 1,
             'title': 'Clue',
             'description': 'Milton Bradley',
-            'numberOfPlayers': 6,
+            'numberOfPlayers': 6
         }
         #make sure the request is AUTHENTICATED
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
